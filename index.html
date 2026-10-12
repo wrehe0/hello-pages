@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой первый сайт</title>
+    <style>
+        /* === CSS стили === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            background: linear-gradient(90deg, #e94560, #f5a623, #e94560);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shine 3s linear infinite;
+        }
+
+        @keyframes shine {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        p {
+            font-size: 1.1rem;
+            color: #b8c1ec;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .counter {
+            font-size: 4rem;
+            font-weight: 700;
+            color: #e94560;
+            margin: 20px 0;
+            transition: transform 0.3s ease;
+            text-shadow: 0 0 30px rgba(233, 69, 96, 0.5);
+        }
+
+        .counter.pop {
+            transform: scale(1.3);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #e94560, #c62a44);
+            color: #fff;
+            box-shadow: 0 8px 20px rgba(233, 69, 96, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(233, 69, 96, 0.6);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #b8c1ec;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            transform: translateY(-3px);
+        }
+
+        .btn-secondary:active {
+            transform: translateY(-1px);
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            color: #f5a623;
+            min-height: 1.5em;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 0.85rem;
+            color: rgba(184, 193, 236, 0.5);
+        }
+
+        .footer span {
+            color: #e94560;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 28px 20px;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            .counter {
+                font-size: 3rem;
+            }
+            button {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>✨ Добро пожаловать! ✨</h1>
+        <p>Этот сайт создан на чистом HTML, CSS и JavaScript.<br>Всё в одном файле — просто и удобно.</p>
+
+        <div class="counter" id="counter">0</div>
+
+        <div class="buttons">
+            <button class="btn-primary" id="incrementBtn">➕ Увеличить</button>
+            <button class="btn-secondary" id="decrementBtn">➖ Уменьшить</button>
+            <button class="btn-secondary" id="resetBtn">🔄 Сбросить</button>
+        </div>
+
+        <div class="message" id="message"></div>
+
+        <div class="footer">Сделано с <span>❤</span> в одном файле</div>
+    </div>
+
+    <script>
+        // === JavaScript логика ===
+        (function() {
+            'use strict';
+
+            // Получаем элементы
+            const counterEl = document.getElementById('counter');
+            const incrementBtn = document.getElementById('incrementBtn');
+            const decrementBtn = document.getElementById('decrementBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const messageEl = document.getElementById('message');
+
+            // Начальное значение
+            let count = 0;
+            let messageTimeout = null;
+
+            // Функция обновления отображения
+            function updateDisplay() {
+                counterEl.textContent = count;
+
+                // Анимация "поп"
+                counterEl.classList.add('pop');
+                setTimeout(() => {
+                    counterEl.classList.remove('pop');
+                }, 300);
+
+                // Меняем цвет в зависимости от значения
+                if (count > 0) {
+                    counterEl.style.color = '#4ecca3';
+                    counterEl.style.textShadow = '0 0 30px rgba(78, 204, 163, 0.5)';
+                } else if (count < 0) {
+                    counterEl.style.color = '#e94560';
+                    counterEl.style.textShadow = '0 0 30px rgba(233, 69, 96, 0.5)';
+                } else {
+                    counterEl.style.color = '#e94560';
+                    counterEl.style.textShadow = '0 0 30px rgba(233, 69, 96, 0.5)';
+                }
+            }
+
+            // Функция показа сообщения
+            function showMessage(text) {
+                if (messageTimeout) {
+                    clearTimeout(messageTimeout);
+                }
+                messageEl.textContent = text;
+                messageEl.style.opacity = '1';
+
+                messageTimeout = setTimeout(() => {
+                    messageEl.style.opacity = '0';
+                }, 2000);
+            }
+
+            // Увеличение
+            incrementBtn.addEventListener('click', () => {
+                count++;
+                updateDisplay();
+                showMessage('➕ Значение увеличено!');
+            });
+
+            // Уменьшение
+            decrementBtn.addEventListener('click', () => {
+                count--;
+                updateDisplay();
+                showMessage('➖ Значение уменьшено!');
+            });
+
+            // Сброс
+            resetBtn.addEventListener('click', () => {
+                count = 0;
+                updateDisplay();
+                showMessage('🔄 Счётчик сброшен!');
+            });
+
+            // Поддержка клавиатуры
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowUp' || e.key === '+') {
+                    incrementBtn.click();
+                } else if (e.key === 'ArrowDown' || e.key === '-') {
+                    decrementBtn.click();
+                } else if (e.key === 'r' || e.key === 'R') {
+                    resetBtn.click();
+                }
+            });
+
+            // Инициализация
+            updateDisplay();
+            console.log('✅ Сайт загружен! Используйте кнопки или клавиши ↑ ↓ R');
+        })();
+    </script>
+
+</body>
+</html>
